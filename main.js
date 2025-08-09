@@ -17,12 +17,12 @@ function _el(id) {
   return document.getElementById(id)
 }
 
-document.addEventListener('keydown', function(event){
+document.addEventListener('keydown', function (event) {
   if (event.target.classList.contains('form-control'))
     resetError(event.target)
 })
 
-function resetError(elem){
+function resetError(elem) {
   elem.classList.remove("is-invalid")
   elem.parentElement.classList.remove("is-invalid")
   elem.parentElement.nextElementSibling.innerText = ''
@@ -70,7 +70,7 @@ const formElementsValidation = [
   }
 ]
 
-function validate(){
+function validate() {
   let isValid = true
   formElementsValidation.forEach(elem => {
     const $elem = _el(elem.id)
@@ -88,7 +88,7 @@ function validate(){
   return isValid
 }
 
-function addToCart(){
+function addToCart() {
   const title = _el("prod_title").value
   const price = _el("prod_price").valueAsNumber
   const qty = _el("prod_qty").valueAsNumber
@@ -106,18 +106,35 @@ function addToCart(){
   } else {
     CART[index].qty += qty
   }
-  
+
   _el("prod_form").reset()
   _el("prod_title").focus()
   showProduct()
 }
 
-function showProduct(){
+function showProduct() {
   let html = ''
-  CART.forEach((prod) => {
-    html += `<li>${prod.title} ${prod.price} x ${prod.qty} - ${prod.price * prod.qty}</li>`
+  CART.forEach((prod, index) => {
+    html += `<tr>
+      <td> ${index + 1}</td>
+      <td>${prod.title}</td>
+      <td>${prod.isBuy ? '<span class="badge text-bg-success">Yes</span>' : '<span class="badge text-bg-danger">No</span>'}</td>
+      <td>${prod.qty}</td>
+      <td>${prod.price}</td>
+      <td>${prod.price * prod.qty}</td>
+      <td>
+        <button type="button" class="btn btn-info btn-sm" onclick="buyProduct(${index})">Buy</button>
+      </td>
+    </tr> `
   })
   _el('prod_list').innerHTML = html
+}
+
+
+
+function buyProduct(index) {
+  CART[index].isBuy = true;
+  showProduct()
 }
 
 
