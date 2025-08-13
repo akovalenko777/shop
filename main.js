@@ -95,7 +95,7 @@ function addToCart() {
 
   if (!validate()) return
 
-  const index = CART.findIndex((el) => el.title === title)
+  const index = CART.findIndex((el) => el.title.toLowerCase() === title.toLowerCase())
   if (index === -1) {
     CART.push({
       title,
@@ -111,7 +111,6 @@ function addToCart() {
     position: 'center',
     timeout: 5000
   })
-  toast.error('qweqwe')
   _el("prod_form").reset()
   _el("prod_title").focus()
   showProduct()
@@ -119,6 +118,7 @@ function addToCart() {
 
 function showProduct() {
   let html = ''
+  let total = 0
   CART.forEach((prod, index) => {
     html += `<tr>
       <td> ${index + 1}</td>
@@ -132,8 +132,10 @@ function showProduct() {
         <button type="button" class="btn btn-danger btn-sm" onclick="deleteProduct(${index}, '${prod.title}')">Delete</button>
       </td>
     </tr> `
+    total += prod.price * prod.qty
   })
   _el('prod_list').innerHTML = html
+  _el('total_sum').innerHTML = total
 }
 
 
@@ -149,8 +151,8 @@ function deleteProduct(index, title){
     CART.splice(index, 1)
     showProduct()
   }
-  
- 
 }
+
+
 
 showProduct()
