@@ -106,7 +106,12 @@ function addToCart() {
   } else {
     CART[index].qty += qty
   }
-
+  toast.success('Product successfully added', {
+    autoclose: false,
+    position: 'center',
+    timeout: 5000
+  })
+  toast.error('qweqwe')
   _el("prod_form").reset()
   _el("prod_title").focus()
   showProduct()
