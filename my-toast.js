@@ -1,6 +1,6 @@
 const toast = {
   options: {
-    autoclose: false,
+    autoclose: true,
     position: 'left top',
     timeout: 3000
   },
@@ -15,60 +15,77 @@ const toast = {
     width: '350px',
     zIndex: 10
   },
-  success(text, opts = {}){
-    this.options = {...this.options, ...opts}
-    this.show('success', text)
+  types: {
+    success: {
+      backgroundColor: '#cbffcb',
+      borderColor: '#004600'
+    },
+    error: {
+      backgroundColor: '#ffcbcb',
+      borderColor: '#560001'
+    },
+    warning: {
+      backgroundColor: '#fff2cb',
+      borderColor: '#b88100'
+    },
+    info: {
+      backgroundColor: '#cbf8ff',
+      borderColor: '#006192'
+    }
   },
-  error(text, opts = {}){
-    this.options = {...this.options, ...opts}
-    this.show('error', text)
+  init(){
+    Object.keys(this.types).forEach(type => {
+      this[type] = (text, opts={}) => {
+        this.show(type, text, {...this.options, ...opts})
+      }
+    })
   },
-  warning(text, opts = {}){
-    this.options = {...this.options, ...opts}
-    this.show('warning', text)
-  },
-  info(text, opts = {}){
-    this.options = {...this.options, ...opts}
-    this.show('info', text)
-  },
-  show(type, text){
+  show(type, text, options){
     const div = document.createElement('div')
     div.id = 'my-toast'
-    div.className = `my-toast ${type}`
-    div.innerText = text
-    Object.entries(this.style).forEach(([prop, value]) => {
+    Object.entries({...this.style, ...this.types[type]}).forEach(([prop, value]) => {
       div.style[prop] = value
     })
+    
+    const p = document.createElement('p')
+    p.innerText = text
+    div.append(p)
+
+    if (!options.autoclose) {
+      const button = document.createElement('button')
+      button.type = 'button'
+      button.innerText = '×'
+      button.onclick = ()=>{this.hide(0)}
+      div.append(button)
+    }
+    
+    if (document.getElementById('my-toast')) {
+      this.hide(0)
+    }
 
     document.body.prepend(div)
-    console.log(div);
-    
 
     // const html = `<div id="my-toast" class="my-toast ${type}">
     //   <p>${text}</p>
-    //   ${!this.options.autoclose ? '<button type="button" onclick="toast.options.timeout=0;toast.hide()">&times;</button>' : ''}
+    //   ${!this.options.autoclose ? '<button type="button" onclick="toast.hide(0)">&times;</button>' : ''}
     // </div>`
-
-    // if (document.getElementById('my-toast')) {
-    //   this.hide(0)
-    // }
-
     // document.body.insertAdjacentHTML('afterbegin', html)
-    this.options.autoclose && this.hide()
+    options.autoclose && this.hide(options.timeout)
   },
-  hide(){
+  hide(timeout = 0){
     const el = document.getElementById('my-toast')
     if (el === null) return
-    if (this.timeout === 0) {
+    if (timeout === 0) {
       el.remove()
       return
     }
     setTimeout(()=>{
       el.remove()
-    }, this.timeout)
+    }, timeout)
   }
 }
 
+toast.init()
 
 
 
