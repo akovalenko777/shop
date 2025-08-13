@@ -129,6 +129,7 @@ function showProduct() {
       <td>${prod.price * prod.qty}</td>
       <td>
         <button type="button" class="btn btn-info btn-sm" onclick="buyProduct(${index})">Buy</button>
+        <button type="button" class="btn btn-danger btn-sm" onclick="deleteProduct(${index}, '${prod.title}')">Delete</button>
       </td>
     </tr> `
   })
@@ -142,5 +143,14 @@ function buyProduct(index) {
   showProduct()
 }
 
+function deleteProduct(index, title){
+
+  if(confirm(`Are you sure to delete ${title}?`)){
+    CART.splice(index, 1)
+    showProduct()
+  }
+  
+ 
+}
 
 showProduct()
